@@ -1,0 +1,46 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model StudyPlan {
+  id          Int      @id @default(autoincrement())
+  subject     String
+  examDate    String
+  hoursPerDay Int
+  prepLevel   String
+  planContent String
+  createdAt   DateTime @default(now())
+  tasks       Task[]
+}
+
+model Quiz {
+  id         Int           @id @default(autoincrement())
+  topic      String
+  difficulty String
+  questions  String        // JSON-encoded array of {question, options, answer}
+  createdAt  DateTime      @default(now())
+  attempts   QuizAttempt[]
+}
+
+model QuizAttempt {
+  id             Int      @id @default(autoincrement())
+  quizId         Int
+  score          Int
+  totalQuestions Int
+  attemptedAt    DateTime @default(now())
+  quiz           Quiz     @relation(fields: [quizId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  title       String
+  done        Boolean    @default(false)
+  studyPlanId Int?
+  createdAt   DateTime   @default(now())
+  studyPlan   StudyPlan? @relation(fields: [studyPlanId], references: [id], onDelete: SetNull)
+}

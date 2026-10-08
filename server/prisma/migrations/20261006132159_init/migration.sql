@@ -1,0 +1,39 @@
+-- CreateTable
+CREATE TABLE "StudyPlan" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "subject" TEXT NOT NULL,
+    "examDate" TEXT NOT NULL,
+    "hoursPerDay" INTEGER NOT NULL,
+    "prepLevel" TEXT NOT NULL,
+    "planContent" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "Quiz" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "topic" TEXT NOT NULL,
+    "difficulty" TEXT NOT NULL,
+    "questions" TEXT NOT NULL,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "QuizAttempt" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "quizId" INTEGER NOT NULL,
+    "score" INTEGER NOT NULL,
+    "totalQuestions" INTEGER NOT NULL,
+    "attemptedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "QuizAttempt_quizId_fkey" FOREIGN KEY ("quizId") REFERENCES "Quiz" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "Task" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "title" TEXT NOT NULL,
+    "done" BOOLEAN NOT NULL DEFAULT false,
+    "studyPlanId" INTEGER,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "Task_studyPlanId_fkey" FOREIGN KEY ("studyPlanId") REFERENCES "StudyPlan" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
