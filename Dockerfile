@@ -1,5 +1,5 @@
 # ---- Stage 1: Build frontend ----
-FROM node:20-alpine AS client-build
+FROM node:20-bookworm-slim AS client-build
 WORKDIR /app/client
 COPY client/package*.json ./
 RUN npm install
@@ -7,8 +7,9 @@ COPY client/ ./
 RUN npm run build
 
 # ---- Stage 2: Build backend ----
-FROM node:20-alpine AS server-build
+FROM node:20-bookworm-slim AS server-build
 WORKDIR /app/server
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 COPY server/package*.json ./
 RUN npm install
 COPY server/ ./
@@ -16,8 +17,9 @@ RUN npx prisma generate
 RUN npm run build
 
 # ---- Stage 3: Production image ----
-FROM node:20-alpine AS production
+FROM node:20-bookworm-slim AS production
 WORKDIR /app
+RUN apt-get update && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
 
 # Install only production dependencies
 COPY server/package*.json ./server/
